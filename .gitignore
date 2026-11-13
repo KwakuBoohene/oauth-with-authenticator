@@ -1,0 +1,29 @@
+# Planning notes are local-only (see AGENTS.md). Never commit them.
+/plans/
+
+# Go build output
+/server/bin/
+/e2e/bin/
+
+# Rust build output
+/authenticator/target/
+
+# Runtime data written by the servers / authenticator during local runs
+/data/
+*.state.cbor
+*.key.json
+
+# Local environment overrides
+.env
+.env.*
+!.env.example
+
+# Editors / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+AGENTS.md
+CLAUDE.md
+docs/glossary.md
+scripts/link-glossary.py
