@@ -1,0 +1,21 @@
+# Cargo.toml at the workspace root. A "workspace" groups several Rust crates
+# (packages) so they share one build folder, one lockfile and one set of lint
+# rules. Each crate lives under crates/ or bins/ and is listed in "members".
+#
+# Why a workspace: the authenticator is split into small crates (encoding,
+# crypto, CBOR, CTAP2, ...). Keeping them in one workspace lets them depend on
+# each other without publishing anything.
+[workspace]
+members = ["crates/pk-encoding"]
+resolver = "3"
+
+# Settings every crate inherits with `version.workspace = true` etc.
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+
+# Lint rules shared by all crates. `unsafe_code = "forbid"` makes the compiler
+# reject any `unsafe` block. Why: this is a learning project, and `unsafe` opts
+# out of Rust's memory-safety guarantees, so we keep it out entirely.
+[workspace.lints.rust]
+unsafe_code = "forbid"

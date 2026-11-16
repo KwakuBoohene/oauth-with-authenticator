@@ -1,0 +1,20 @@
+# .editorconfig tells text editors (VS Code, JetBrains, Vim...) the same basic
+# formatting rules, so every file is saved consistently.
+# Why: stops whitespace noise in PR diffs, which would eat into the 200-line limit.
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+
+# Makefile recipes require literal TAB characters.
+[Makefile]
+indent_style = tab
+
+# Go's gofmt always uses tabs, so Go files follow that.
+[*.go]
+indent_style = tab

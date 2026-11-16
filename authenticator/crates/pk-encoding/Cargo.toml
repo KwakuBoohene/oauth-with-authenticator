@@ -1,0 +1,12 @@
+# Manifest for the pk-encoding crate: the first crate in the authenticator.
+# It has NO dependencies (no crates.io packages), per AGENTS.md §6.
+[package]
+name = "pk-encoding"
+version.workspace = true
+edition.workspace = true
+
+# Inherit the workspace lint rules (including the ban on `unsafe`).
+[lints]
+workspace = true
+
+[dependencies]
