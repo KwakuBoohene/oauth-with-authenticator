@@ -27,3 +27,6 @@ AGENTS.md
 CLAUDE.md
 docs/glossary.md
 scripts/link-glossary.py
+# Local line-count enforcement; these tools live only in this checkout.
+/scripts/loc.sh
+/scripts/loc_test.sh
