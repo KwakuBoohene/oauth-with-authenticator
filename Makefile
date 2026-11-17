@@ -8,7 +8,7 @@
 #
 # .PHONY lists targets that are names of actions, not files on disk. Why:
 # without it, a file named `test` in this folder would stop `make test` running.
-.PHONY: test test-go test-rust lint fmt up down logs
+.PHONY: test test-go test-rust test-docker lint fmt up down logs
 
 # test: run the unit tests for both languages. Fast, no Docker needed.
 test: test-go test-rust
@@ -20,6 +20,16 @@ test-go:
 # test-rust: run every Rust test (unit tests and doc tests) in the workspace.
 test-rust:
 	cd authenticator && cargo test --workspace
+
+# test-docker: run both test suites inside containers, so only Docker is needed
+#   on the machine. Why: proves the tests don't depend on tools installed on
+#   your Mac. Go runs in the official golang image with server/ mounted in.
+#   Rust builds docker/rust.Dockerfile's "test" stage, which fails the build if
+#   clippy or a test fails. --no-cache-filter test forces that stage to re-run
+#   every time instead of reusing an old green result; the cache mounts keep it fast.
+test-docker:
+	docker run --rm -v "$(CURDIR)/server:/src" -w /src golang:1.26 go test ./...
+	DOCKER_BUILDKIT=1 docker build -f docker/rust.Dockerfile --target test --no-cache-filter test .
 
 # lint: check code for likely bugs without running it.
 #   go vet      = Go's built-in bug finder
