@@ -8,7 +8,7 @@
 #
 # .PHONY lists targets that are names of actions, not files on disk. Why:
 # without it, a file named `test` in this folder would stop `make test` running.
-.PHONY: test test-go test-rust lint fmt
+.PHONY: test test-go test-rust lint fmt up down logs
 
 # test: run the unit tests for both languages. Fast, no Docker needed.
 test: test-go test-rust
@@ -32,3 +32,18 @@ lint:
 fmt:
 	cd server && gofmt -w .
 	cd authenticator && cargo fmt --all
+
+# up: build the image and start every service in the background (-d).
+#   --build  rebuild the image if the code changed
+#   --wait   don't return until each service's healthcheck reports "healthy",
+#            so `make up && curl ...` never races a still-starting server
+up:
+	docker compose up -d --build --wait
+
+# down: stop and remove the containers (images and your files are kept).
+down:
+	docker compose down
+
+# logs: follow the services' output; press Ctrl+C to stop watching.
+logs:
+	docker compose logs -f

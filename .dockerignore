@@ -1,0 +1,12 @@
+# .dockerignore: files Docker must NOT send to the build ("build context").
+# Why: a smaller context builds faster, and it keeps local-only files (plans,
+# keys, build output) from ever ending up inside an image layer.
+.git
+plans
+docs
+scripts
+**/target
+data
+.env
+.env.*
+*.md

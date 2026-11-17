@@ -1,0 +1,21 @@
+# docker-compose.yml: defines the services that make up the system.
+# `make up` starts them; `make down` stops them. More services (app-a, app-b,
+# resource-api) are added in later tickets (E08-T05).
+services:
+  authserver:
+    # Build from the repository root so the Dockerfile can see server/.
+    build:
+      context: .
+      dockerfile: docker/go.Dockerfile
+    # host:container. 8080 on your machine -> 8080 in the container, so a browser
+    # at http://auth.localhost:8080 reaches it (*.localhost resolves to 127.0.0.1).
+    ports:
+      - "8080:8080"
+    # Docker runs this inside the container every few seconds. It calls OUR
+    # binary because the distroless image has no curl (see main.go).
+    healthcheck:
+      test: ["CMD", "/app/authserver", "-healthcheck"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 2s
