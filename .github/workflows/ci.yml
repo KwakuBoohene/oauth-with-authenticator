@@ -1,0 +1,38 @@
+# CI runs the project's existing lint, test, and image-build commands on PRs.
+# GitHub Actions workflow syntax: https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax
+# The 200-line commit hook stays local because it is this learner's own rule.
+name: CI
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+# Checkout only needs repository read access; the workflow never publishes.
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      # Match server/go.mod and the version used by docker/go.Dockerfile.
+      - uses: actions/setup-go@v6
+        with:
+          go-version: '1.26'
+          cache: false
+
+      # Match docker/rust.Dockerfile; clippy is needed by `make lint`.
+      - name: Install Rust and clippy
+        run: |
+          rustup toolchain install 1.98.0 --profile minimal --component clippy
+          rustup default 1.98.0
+
+      - name: Lint and test Go and Rust
+        run: make lint test
+
+      # Build the same server image used by `make up`, without starting ports.
+      - name: Build server image
+        run: docker compose build
